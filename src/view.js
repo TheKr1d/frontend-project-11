@@ -1,11 +1,11 @@
 import onChange from 'on-change';
 
-const change = (state, elements) => onChange(state, (path, newValue) => {
+const change = (state, elements, i18n) => onChange(state, (path, newValue) => {
+  const feedbackCopy = elements.feedback;
   if (path === 'error') {
-    const feedbackCopy = elements.feedback;
     if (newValue === '') {
       elements.input.classList.remove('is-invalid');
-      feedbackCopy.textContent = 'RSS успешно загружен';
+      feedbackCopy.textContent = i18n.t('validRSS');
       elements.feedback.classList.remove('text-danger');
       elements.feedback.classList.add('text-success');
     } else {

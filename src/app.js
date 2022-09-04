@@ -45,6 +45,7 @@ const state = {
     contents: [],
   },
 };
+
 const watchedState = render(state, elements, i18n);
 
 const app = () => {
@@ -62,8 +63,10 @@ const app = () => {
         })
           .then((response) => {
             const { feed, contents } = parserXML(response.data.contents);
+            contents.items.forEach((item) => {
+              watchedState.dataRSS.contents.push(item);
+            })
             watchedState.dataRSS.feeds.push(feed);
-            watchedState.dataRSS.contents.push(contents);
             watchedState.urlsList.push(url);
           })
           .catch(() => {
@@ -74,5 +77,29 @@ const app = () => {
         watchedState.error = i18n.t(`errors.${err.message}`);
       });
   });
+
+  setInterval(() => {
+    if (state.urlsList.length === 0) {
+      return;
+    }
+    const promises = state.urlsList.map((url) => axios({
+        method: 'get',
+        url: `https://allorigins.hexlet.app/get?url=${url}`,
+        disableCashe: true,
+      })
+    );
+    const promiseAll = Promise.all(promises);
+    const posts = [];
+    promiseAll.then((collection) => {
+      collection.forEach((responce) => {
+        const { contents } = parserXML(responce.data.contents);
+        contents.items.forEach((item) => {
+          posts.push(item);
+        })
+      })
+    })
+    watchedState.dataRSS.contents = posts;
+  }, 5000)
 };
 export default app;
+//  http://lorem-rss.herokuapp.com/feed?unit=second&interval=4

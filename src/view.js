@@ -60,8 +60,7 @@ const renderContens = (elements, arrContents) => {
   h2CardBody.classList.add('card-title', 'h4');
   ulPost.classList.add('list-group', 'border-0', 'rounded-0');
   h2CardBody.textContent = 'Посты';
-  arrContents.forEach(({ items }) => {
-    items.forEach((el) => {
+  arrContents.forEach((el) => {
       const liCardBody = document.createElement('li');
       const a = document.createElement('a');
       const button = document.createElement('button');
@@ -114,7 +113,6 @@ const renderContens = (elements, arrContents) => {
       liCardBody.append(a, button);
       ulPost.append(liCardBody);
     });
-  });
   divCardPost.append(h2CardBody);
   divPost.append(divCardPost, ulPost);
   elements.posts.append(divPost);

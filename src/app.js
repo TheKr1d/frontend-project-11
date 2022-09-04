@@ -1,21 +1,17 @@
 import * as yup from 'yup';
 import i18next from 'i18next';
+import axios from 'axios';
 import render from './view.js';
 import resources from './locales/index.js';
-import axios from 'axios';
-
-let id = 0;
-const generateId = () => id += 1;
 
 const parserXML = (xml) => {
   const newDomParser = new DOMParser();
   const domXML = newDomParser.parseFromString(xml, 'text/xml');
-  generateId();
   const feed = {
     title: domXML.querySelector('channel > title').textContent,
-    description: domXML.querySelector('channel > description').textContent
+    description: domXML.querySelector('channel > description').textContent,
   };
-  const contents = { items: domXML.querySelectorAll('item'), id };
+  const contents = { items: domXML.querySelectorAll('item') };
   return { feed, contents };
 };
 
@@ -31,7 +27,14 @@ const elements = {
   input: document.querySelector('input'),
   feedback: document.querySelector('.feedback'),
   feeds: document.querySelector('.feeds'),
-  posts: document.querySelector('.posts')
+  posts: document.querySelector('.posts'),
+  modal: document.getElementById('modal'),
+  body: document.querySelector('body'),
+  modalTitle: document.querySelector('.modal-title'),
+  modalBody: document.querySelector('.modal-body'),
+  btnPrimary: document.querySelector('.btn-primary'),
+  btnClose: document.querySelector('.btn-close'),
+  btnSecondary: document.querySelector('.btn-secondary'),
 };
 
 const state = {
@@ -39,8 +42,8 @@ const state = {
   urlsList: [],
   dataRSS: {
     feeds: [],
-    contents: []
-  }
+    contents: [],
+  },
 };
 const watchedState = render(state, elements, i18n);
 
@@ -55,7 +58,7 @@ const app = () => {
         axios({
           method: 'get',
           url: `https://allorigins.hexlet.app/get?url=${enteredByUrl}`,
-          disableCashe: true
+          disableCashe: true,
         })
           .then((response) => {
             const { feed, contents } = parserXML(response.data.contents);
@@ -63,9 +66,9 @@ const app = () => {
             watchedState.dataRSS.contents.push(contents);
             watchedState.urlsList.push(url);
           })
-          .catch((err) => {
-            watchedState.error = i18n.t(`errors.notValidRSS`);
-          })
+          .catch(() => {
+            watchedState.error = i18n.t('errors.notValidRSS');
+          });
       })
       .catch((err) => {
         watchedState.error = i18n.t(`errors.${err.message}`);

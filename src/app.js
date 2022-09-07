@@ -1,9 +1,11 @@
 import * as yup from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
+import _ from 'lodash';
 import render from './view.js';
 import resources from './locales/index.js';
 
+const getQueryUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
 const parserXML = (xml) => {
   const newDomParser = new DOMParser();
   const domXML = newDomParser.parseFromString(xml, 'text/xml');
@@ -11,7 +13,15 @@ const parserXML = (xml) => {
     title: domXML.querySelector('channel > title').textContent,
     description: domXML.querySelector('channel > description').textContent,
   };
-  const contents = { items: domXML.querySelectorAll('item') };
+  const items = domXML.querySelectorAll('item');
+  const contents = [];
+  items.forEach((item) => {
+    contents.push({
+      title: item.querySelector('title').textContent,
+      description: item.querySelector('description').textContent,
+      link: item.querySelector('link').textContent,
+    });
+  });
   return { feed, contents };
 };
 
@@ -51,21 +61,19 @@ const watchedState = render(state, elements, i18n);
 const app = () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const collections = [];
     const formData = new FormData(e.target);
     const enteredByUrl = formData.get('url');
     const schema = yup.string().url('notValidUrls').notOneOf(state.urlsList, 'workedRSS');
     schema.validate(enteredByUrl)
       .then((url) => {
-        axios({
-          method: 'get',
-          url: `https://allorigins.hexlet.app/get?url=${enteredByUrl}`,
-          disableCashe: true,
-        })
+        axios(getQueryUrl(url))
           .then((response) => {
             const { feed, contents } = parserXML(response.data.contents);
-            contents.items.forEach((item) => {
-              watchedState.dataRSS.contents.push(item);
-            })
+            contents.forEach((item) => {
+              collections.push(item);
+            });
+            watchedState.dataRSS.contents = [...state.dataRSS.contents, ...collections];
             watchedState.dataRSS.feeds.push(feed);
             watchedState.urlsList.push(url);
           })
@@ -76,30 +84,30 @@ const app = () => {
       .catch((err) => {
         watchedState.error = i18n.t(`errors.${err.message}`);
       });
+    const timer = () => {
+      if (state.urlsList.length === 0) {
+        return setTimeout(timer, 5000);
+      }
+      const promises = state.urlsList.map((url) => {
+        const queryUrl = getQueryUrl(url);
+        return axios(queryUrl);
+      });
+      const promiseAll = Promise.all(promises);
+      promiseAll.then((responses) => {
+        responses.forEach((response) => {
+          const { contents } = parserXML(response.data.contents);
+          contents.forEach((item) => {
+            const newPost = !state.dataRSS.contents.find((item2) => _.isEqual(item2, item));
+            if (newPost) {
+              watchedState.dataRSS.contents.push(item);
+            }
+          });
+        });
+      });
+      return setTimeout(timer, 5000);
+    };
+    timer();
   });
-
-  setInterval(() => {
-    if (state.urlsList.length === 0) {
-      return;
-    }
-    const promises = state.urlsList.map((url) => axios({
-        method: 'get',
-        url: `https://allorigins.hexlet.app/get?url=${url}`,
-        disableCashe: true,
-      })
-    );
-    const promiseAll = Promise.all(promises);
-    const posts = [];
-    promiseAll.then((collection) => {
-      collection.forEach((responce) => {
-        const { contents } = parserXML(responce.data.contents);
-        contents.items.forEach((item) => {
-          posts.push(item);
-        })
-      })
-    })
-    watchedState.dataRSS.contents = posts;
-  }, 5000)
 };
 export default app;
 //  http://lorem-rss.herokuapp.com/feed?unit=second&interval=4

@@ -1,8 +1,13 @@
 const renderError = (elements, textError) => {
   const feedbackCopy = elements.feedback;
-  elements.input.classList.add('is-invalid');
   feedbackCopy.textContent = textError;
-  elements.feedback.classList.remove('text-success');
-  elements.feedback.classList.add('text-danger');
+  if (!textError) {
+    elements.input.classList.remove('is-invalid', 'is-valid');
+  } else {
+    elements.input.classList.add('is-invalid');
+    elements.containerInput.removeAttribute('disabled');
+    elements.feedback.classList.remove('text-success');
+    elements.feedback.classList.add('text-danger');
+  }
 };
 export default renderError;

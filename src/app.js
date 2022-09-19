@@ -17,6 +17,7 @@ i18n.init({
 const elements = {
   form: document.querySelector('.rss-form'),
   input: document.querySelector('input'),
+  containerInput: document.getElementById('submit-button'),
   feedback: document.querySelector('.feedback'),
   feeds: document.querySelector('.feeds'),
   posts: document.querySelector('.posts'),
@@ -58,14 +59,17 @@ const timer = () => {
         }
       });
     });
+    setTimeout(timer, 5000);
   });
-  return setTimeout(timer, 5000);
+  return null;
 };
 timer();
 
 const app = () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    view.error = null;
+    elements.containerInput.setAttribute('disabled', 'true');
     const formData = new FormData(e.target);
     const enteredByUrl = formData.get('url');
     const schema = yup.string().url('notValidUrls').notOneOf(state.urlsList, 'workedRSS');

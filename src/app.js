@@ -38,7 +38,7 @@ const state = {
   },
 };
 
-const watchedState = render(state, elements, i18n);
+const view = render(state, elements, i18n);
 const timer = () => {
   if (state.urlsList.length === 0) {
     return setTimeout(timer, 5000);
@@ -54,7 +54,7 @@ const timer = () => {
       contents.forEach((item) => {
         const newPost = !state.dataRSS.contents.find((item2) => item.title === item2.title);
         if (newPost) {
-          watchedState.dataRSS.contents.push(item);
+          view.dataRSS.contents.push(item);
         }
       });
     });
@@ -75,21 +75,21 @@ const app = () => {
           .then((response) => {
             const { feed, contents } = parserXML(response.data.contents);
             contents.forEach((item) => {
-              watchedState.dataRSS.contents.push(item);
+              view.dataRSS.contents.push(item);
             });
-            watchedState.dataRSS.feeds.push(feed);
-            watchedState.urlsList.push(url);
+            view.dataRSS.feeds.push(feed);
+            view.urlsList.push(url);
           })
           .catch((err) => {
             if (err.request) {
-              watchedState.error = i18n.t('errors.disconnect');
+              view.error = i18n.t('errors.disconnect');
             } else {
-              watchedState.error = i18n.t('errors.notValidRSS');
+              view.error = i18n.t('errors.notValidRSS');
             }
           });
       })
       .catch((err) => {
-        watchedState.error = i18n.t(`errors.${err.message}`);
+        view.error = i18n.t(`errors.${err.message}`);
       });
   });
 };

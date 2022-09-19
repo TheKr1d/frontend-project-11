@@ -73,12 +73,10 @@ const app = () => {
       .then((url) => {
         axios(getQueryUrl(url))
           .then((response) => {
-            const collections = [];
             const { feed, contents } = parserXML(response.data.contents);
             contents.forEach((item) => {
-              collections.push(item);
+              watchedState.dataRSS.contents.push(item);
             });
-            watchedState.dataRSS.contents = [...state.dataRSS.contents, ...collections];
             watchedState.dataRSS.feeds.push(feed);
             watchedState.urlsList.push(url);
           })

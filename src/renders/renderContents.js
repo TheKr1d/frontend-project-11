@@ -1,3 +1,5 @@
+import { Modal } from 'bootstrap';
+
 const activeId = [];
 const renderContens = (elements, arrContents) => {
   const copyPosts = elements.posts;
@@ -19,8 +21,6 @@ const renderContens = (elements, arrContents) => {
     liCardBody.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('type', 'buttom');
-    button.setAttribute('data-bs-toggle', 'modal');
-    button.setAttribute('data-bs-target', '#modal');
     button.setAttribute('id', el.id);
     button.textContent = 'Просмотр';
     a.setAttribute('href', el.link);
@@ -33,6 +33,8 @@ const renderContens = (elements, arrContents) => {
     });
     button.addEventListener('click', (e) => {
       activeId.push(e.target.id);
+      const modal = new Modal(document.getElementById('modal'));
+      modal.show();
       const modalTitleCopy = elements.modalTitle;
       const modalBodyCopy = elements.modalBody;
       const btnPrimaryCopy = elements.btnPrimary;

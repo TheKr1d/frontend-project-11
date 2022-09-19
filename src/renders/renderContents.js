@@ -32,7 +32,6 @@ const renderContens = (elements, arrContents) => {
       renderContens(elements, arrContents);
     });
     button.addEventListener('click', (e) => {
-      e.preventDefault();
       activeId.push(e.target.id);
       const modalTitleCopy = elements.modalTitle;
       const modalBodyCopy = elements.modalBody;

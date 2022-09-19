@@ -80,8 +80,12 @@ const app = () => {
             watchedState.dataRSS.feeds.push(feed);
             watchedState.urlsList.push(url);
           })
-          .catch(() => {
-            watchedState.error = i18n.t('errors.notValidRSS');
+          .catch((err) => {
+            if (err.request) {
+              watchedState.error = i18n.t('errors.disconnect');
+            } else {
+              watchedState.error = i18n.t('errors.notValidRSS');
+            }
           });
       })
       .catch((err) => {

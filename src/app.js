@@ -5,8 +5,12 @@ import render from './view.js';
 import resources from './locales/index.js';
 import parserXML from './parserXML.js';
 
-const getQueryUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
-
+const getQueryUrl = (url) => {
+  const responce = new URL('get', 'https://allorigins.hexlet.app');
+  responce.searchParams.set('disableCache', 'true');
+  responce.searchParams.set('url', url);
+  return responce.toString();
+};
 const i18n = i18next.createInstance();
 i18n.init({
   lng: 'ru',
@@ -17,7 +21,7 @@ i18n.init({
 const elements = {
   form: document.querySelector('.rss-form'),
   input: document.querySelector('input'),
-  containerInput: document.getElementById('submit-button'),
+  containerSubmit: document.getElementById('submit-button'),
   feedback: document.querySelector('.feedback'),
   feeds: document.querySelector('.feeds'),
   posts: document.querySelector('.posts'),
@@ -38,7 +42,6 @@ const state = {
     contents: [],
   },
 };
-
 const view = render(state, elements, i18n);
 const timer = () => {
   if (state.urlsList.length === 0) {
@@ -69,8 +72,9 @@ const app = () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     view.error = null;
-    elements.containerInput.setAttribute('disabled', 'true');
+    elements.containerSubmit.setAttribute('disabled', 'true');
     const formData = new FormData(e.target);
+    elements.input.setAttribute('disabled', 'true');
     const enteredByUrl = formData.get('url');
     const schema = yup.string().url('notValidUrls').notOneOf(state.urlsList, 'workedRSS');
     schema.validate(enteredByUrl)

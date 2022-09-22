@@ -19,7 +19,7 @@ const render = (state, elements, i18n) => onChange(state, (path, newValue) => {
       renderContens(elements, newValue);
       return;
     default:
-      console.log(new Error(`Error state: ${path}`));
+      throw Error(`Error state: ${path}`);
   }
 });
 export default render;

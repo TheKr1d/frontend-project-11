@@ -1,4 +1,3 @@
-const activeId = [];
 const renderContens = (elements, arrContents, i18n) => {
   const copyPosts = elements.posts;
   copyPosts.textContent = '';
@@ -23,30 +22,19 @@ const renderContens = (elements, arrContents, i18n) => {
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.textContent = i18n.t('list.view');
+    const activeClassA = el.active ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
+    a.classList.add(...activeClassA);
     a.setAttribute('href', el.link);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('id', el.id);
-    a.addEventListener('click', (e) => {
-      activeId.push(e.target.id);
-      renderContens(elements, arrContents);
-    });
-    button.addEventListener('click', (e) => {
-      activeId.push(e.target.id);
+    if (el.active) {
       const modalTitleCopy = elements.modalTitle;
       const modalBodyCopy = elements.modalBody;
       const btnPrimaryCopy = elements.btnPrimary;
       modalTitleCopy.textContent = el.title;
       modalBodyCopy.textContent = el.description;
       btnPrimaryCopy.href = el.link;
-      a.classList.remove('fw-bold');
-      a.classList.add('fw-normal', 'link-secondary');
-      renderContens(elements, arrContents, i18n);
-    });
-    if (activeId.indexOf(el.id) < 0) {
-      a.classList.add('fw-bold');
-    }
-    if (activeId.indexOf(el.id) > -1) {
       a.classList.remove('fw-bold');
       a.classList.add('fw-normal', 'link-secondary');
     }

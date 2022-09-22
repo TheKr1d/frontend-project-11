@@ -1,7 +1,7 @@
-const renderSuccessfulDonwload = (elements, textValid) => {
+const renderSuccessfulDonwload = (elements, textValid, i18n) => {
   const feedbackCopy = elements.feedback;
   elements.input.classList.remove('is-invalid');
-  feedbackCopy.textContent = textValid;
+  feedbackCopy.textContent = i18n.t(textValid);
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.add('text-success');
   elements.containerSubmit.removeAttribute('disabled');

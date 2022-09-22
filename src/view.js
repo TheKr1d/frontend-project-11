@@ -4,22 +4,22 @@ import renderSuccessfulDonwload from './renders/renderValid.js';
 import renderFeeds from './renders/renderFeeds.js';
 import renderContens from './renders/renderContents.js';
 
-const render = (state, elements, i18n) => onChange(state, (path, newValue) => {
+const watching = (state, elements, i18n) => onChange(state, (path, newValue) => {
   switch (path) {
     case 'error':
-      renderError(elements, newValue);
+      renderError(elements, newValue, i18n);
       return;
     case 'urlsList':
-      renderSuccessfulDonwload(elements, i18n.t('validRSS'));
+      renderSuccessfulDonwload(elements, 'validRSS', i18n);
       return;
     case 'dataRSS.feeds':
-      renderFeeds(elements, newValue);
+      renderFeeds(elements, newValue, i18n);
       return;
     case 'dataRSS.contents':
-      renderContens(elements, newValue);
+      renderContens(elements, newValue, i18n);
       return;
     default:
       throw Error(`Error state: ${path}`);
   }
 });
-export default render;
+export default watching;

@@ -7,5 +7,9 @@ export default {
       workedRSS: 'RSS уже существует',
       disconnect: 'Ошибка сети',
     },
+    list: {
+      posts: 'Посты',
+      view: 'Просмотр',
+    },
   },
 };

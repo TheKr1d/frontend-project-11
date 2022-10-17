@@ -15,20 +15,17 @@ const getQueryUrl = (url) => {
   return responce.toString();
 };
 const addEventActiveEl = (state, view) => {
-  const listAttributesA = document.querySelectorAll('li > a');
-  const listAttributesButton = document.querySelectorAll('li > button');
-  const listButtonAndA = [...listAttributesA, ...listAttributesButton];
-  listButtonAndA.forEach((el) => {
-    el.addEventListener('click', (e) => {
-      const activeId = e.target.id;
+  const listGroup = document.getElementById('posts');
+  listGroup.addEventListener('click', (e) => {
+    const activeId = e.target.id;
+    if (activeId) {
       const newPosts = state.dataRSS.contents.map((item) => (item.id === activeId ? { ...item, active: true } : item));
       view.dataRSS.contents = newPosts; // eslint-disable-line no-param-reassign
       addEventActiveEl(state, view);
-    });
+    }
   });
 };
 const app = () => {
-  const uniqId = () => _.uniqueId();
   const elements = {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('input'),
@@ -59,7 +56,7 @@ const app = () => {
     resources,
   }).then(() => {
     const view = watching(state, elements, i18n);
-    const timer = () => {
+    const runTimer = () => {
       const promises = state.urlsList.map((url) => {
         const queryUrl = getQueryUrl(url);
         return axios(queryUrl);
@@ -71,29 +68,29 @@ const app = () => {
           contents.forEach((item) => {
             const newPost = !state.dataRSS.contents.find((item2) => item.title === item2.title);
             if (newPost) {
-              const id = uniqId();
+              const id = _.uniqueId();
               view.dataRSS.contents.push({ ...item, id, active: false });
-              const newElement = document.querySelectorAll(`[id="${id}"]`);
-              newElement.forEach((el) => {
-                el.addEventListener('click', (e) => {
-                  e.preventDefault();
-                  const activeId = e.target.id;
+              const listGroup = document.getElementById('posts');
+              listGroup.addEventListener('click', (e) => {
+                e.preventDefault();
+                const activeId = e.target.id;
+                if (activeId) {
                   const newPosts = state.dataRSS.contents.map((item2) => (item2.id === activeId ? { ...item2, active: true } : item2));
                   view.dataRSS.contents = newPosts;
-                });
+                }
               });
             }
           });
           addEventActiveEl(state, view);
         });
-        setTimeout(timer, 5000);
+        setTimeout(runTimer, 5000);
       })
-        .catch(() => {
-          setTimeout(timer, 5000);
+        .finally(() => {
+          setTimeout(runTimer, 5000);
         });
       return null;
     };
-    timer();
+    runTimer();
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       view.error = null;
@@ -108,7 +105,7 @@ const app = () => {
             .then((response) => {
               const { feed, contents } = parserXML(response.data.contents);
               contents.forEach((item) => {
-                view.dataRSS.contents.push({ ...item, id: uniqId(), active: false });
+                view.dataRSS.contents.push({ ...item, id: _.uniqueId(), active: false });
               });
               view.dataRSS.feeds.push(feed);
               view.urlsList.push(url);

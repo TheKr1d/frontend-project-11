@@ -10,6 +10,7 @@ const renderContens = (elements, arrContents, i18n) => {
   divCardPost.classList.add('card-body');
   h2CardBody.classList.add('card-title', 'h4');
   ulPost.classList.add('list-group', 'border-0', 'rounded-0');
+  ulPost.setAttribute('id', 'posts');
   h2CardBody.textContent = i18n.t('list.posts');
   arrContents.forEach((el) => {
     const liCardBody = document.createElement('li');

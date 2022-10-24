@@ -42,6 +42,7 @@ const app = () => {
     btnSecondary: document.querySelector('.btn-secondary'),
   };
   const state = {
+    process: 'edit',
     error: null,
     urlsList: [],
     dataRSS: {
@@ -94,9 +95,8 @@ const app = () => {
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       view.error = null;
-      elements.containerSubmit.setAttribute('disabled', 'true');
       const formData = new FormData(e.target);
-      elements.input.setAttribute('disabled', 'true');
+      view.process = 'send';
       const enteredByUrl = formData.get('url');
       const schema = yup.string().url('notValidUrls').notOneOf(state.urlsList, 'workedRSS');
       schema.validate(enteredByUrl)
@@ -113,16 +113,22 @@ const app = () => {
             .then(() => {
               addEventActiveEl(state, view);
             })
+            .then(() => {
+              view.process = 'edit';
+            })
             .catch((err) => {
               if (err.request) {
                 view.error = 'errors.disconnect';
+                view.process = 'edit';
               } else {
                 view.error = 'errors.notValidRSS';
+                view.process = 'edit';
               }
             });
         })
         .catch((err) => {
           view.error = `errors.${err.message}`;
+          view.process = 'edit';
         });
     });
   })

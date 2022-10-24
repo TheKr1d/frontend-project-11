@@ -5,8 +5,6 @@ const renderError = (elements, textError, i18n) => {
     elements.input.classList.remove('is-invalid', 'is-valid');
   } else {
     elements.input.classList.add('is-invalid');
-    elements.containerSubmit.removeAttribute('disabled');
-    elements.input.removeAttribute('disabled');
     elements.feedback.classList.remove('text-success');
     elements.feedback.classList.add('text-danger');
   }

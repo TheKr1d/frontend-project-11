@@ -4,7 +4,6 @@ const renderSuccessfulDonwload = (elements, textValid, i18n) => {
   feedbackCopy.textContent = i18n.t(textValid);
   elements.feedback.classList.remove('text-danger');
   elements.feedback.classList.add('text-success');
-  elements.containerSubmit.removeAttribute('disabled');
   elements.form.reset();
   elements.input.focus();
 };

@@ -47,8 +47,6 @@ const renderContens = (elements, arrContents, i18n) => {
   divPost.append(divCardPost, ulPost);
   const postCopy = elements.posts;
   postCopy.textContent = '';
-  elements.containerSubmit.removeAttribute('disabled');
-  elements.input.removeAttribute('disabled');
   elements.posts.append(divPost);
 };
 

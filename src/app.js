@@ -14,14 +14,12 @@ const getQueryUrl = (url) => {
   responce.searchParams.set('url', url);
   return responce.toString();
 };
-const addEventActiveEl = (state, view) => {
+const addEventActiveEl = (view, state) => {
   const listGroup = document.getElementById('posts');
   listGroup.addEventListener('click', (e) => {
-    const activeId = e.target.id;
-    if (activeId) {
-      const newPosts = state.dataRSS.contents.map((item) => (item.id === activeId ? { ...item, active: true } : item));
-      view.dataRSS.contents = newPosts; // eslint-disable-line no-param-reassign
-      addEventActiveEl(state, view);
+    if (state.dataRSS.activesId.indexOf(e.target.id) === -1) {
+      view.dataRSS.activesId.push(e.target.id);
+      addEventActiveEl(view, state);
     }
   });
 };
@@ -48,6 +46,7 @@ const app = () => {
     dataRSS: {
       feeds: [],
       contents: [],
+      activesId: [],
     },
   };
   const i18n = i18next.createInstance();
@@ -70,19 +69,18 @@ const app = () => {
             const newPost = !state.dataRSS.contents.find((item2) => item.title === item2.title);
             if (newPost) {
               const id = _.uniqueId();
-              view.dataRSS.contents.push({ ...item, id, active: false });
+              view.dataRSS.contents.push({ ...item, id });
+              addEventActiveEl(view, state);
               const listGroup = document.getElementById('posts');
               listGroup.addEventListener('click', (e) => {
                 e.preventDefault();
-                const activeId = e.target.id;
-                if (activeId) {
-                  const newPosts = state.dataRSS.contents.map((item2) => (item2.id === activeId ? { ...item2, active: true } : item2));
-                  view.dataRSS.contents = newPosts;
+                if (state.dataRSS.activesId.indexOf(e.target.id) === -1) {
+                  view.dataRSS.activesId.push(e.target.id);
                 }
               });
             }
           });
-          addEventActiveEl(state, view);
+          addEventActiveEl(view, state);
         });
         setTimeout(runTimer, 5000);
       })
@@ -105,13 +103,13 @@ const app = () => {
             .then((response) => {
               const { feed, contents } = parserXML(response.data.contents);
               contents.forEach((item) => {
-                view.dataRSS.contents.push({ ...item, id: _.uniqueId(), active: false });
+                view.dataRSS.contents.push({ ...item, id: _.uniqueId() });
               });
               view.dataRSS.feeds.push(feed);
               view.urlsList.push(url);
             })
             .then(() => {
-              addEventActiveEl(state, view);
+              addEventActiveEl(view, state);
             })
             .then(() => {
               view.process = 'edit';

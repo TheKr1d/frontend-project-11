@@ -20,7 +20,10 @@ const watching = (state, elements, i18n) => onChange(state, (path, newValue) => 
       renderFeeds(elements, newValue, i18n);
       return;
     case 'dataRSS.contents':
-      renderContens(elements, newValue, i18n, state.dataRSS.activeIdContents);
+      renderContens(elements, newValue, i18n, state.dataRSS.activesId);
+      return;
+    case 'dataRSS.activesId':
+      renderContens(elements, state.dataRSS.contents, i18n, newValue);
       return;
     default:
       throw Error(`Error state: ${path}`);

@@ -1,4 +1,4 @@
-const renderContens = (elements, arrContents, i18n) => {
+const renderContens = (elements, arrContents, i18n, activesId) => {
   const copyPosts = elements.posts;
   copyPosts.textContent = '';
   const divPost = document.createElement('div');
@@ -23,13 +23,14 @@ const renderContens = (elements, arrContents, i18n) => {
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.textContent = i18n.t('list.view');
-    const activeClassA = el.active ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
+    const isActive = activesId.indexOf(el.id) > -1;
+    const activeClassA = isActive ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
     a.classList.add(...activeClassA);
     a.setAttribute('href', el.link);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('id', el.id);
-    if (el.active) {
+    if (isActive) {
       const modalTitleCopy = elements.modalTitle;
       const modalBodyCopy = elements.modalBody;
       const btnPrimaryCopy = elements.btnPrimary;

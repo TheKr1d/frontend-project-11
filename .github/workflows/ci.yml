@@ -1,4 +1,4 @@
-name: CI Lint & Test & Sonar
+name: CI Lint
 on: [push, pull_request]
 jobs:
   ci:

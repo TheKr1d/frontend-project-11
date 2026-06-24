@@ -1,4 +1,5 @@
-import './style.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css';
 
 const form = document.querySelector('#rss-form')
 const input = document.querySelector('#rss-url')

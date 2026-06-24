@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSS Reader</title>
+  </head>
+  <body>
+    <main class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+          <h1 class="mb-4">RSS Reader</h1>
+
+          <form id="rss-form" class="mb-3">
+            <div class="input-group">
+              <input
+                id="rss-url"
+                name="url"
+                type="text"
+                class="form-control"
+                placeholder="Введите URL RSS"
+                aria-label="RSS URL"
+              />
+              <button type="submit" class="btn btn-primary">Добавить</button>
+            </div>
+          </form>
+
+          <div id="content" class="small"></div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

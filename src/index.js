@@ -1,3 +1,7 @@
-import { app } from './main.js'
+import { app } from './main.js';
 
-app()
+const runApp = () => {
+    app()
+}
+
+runApp()

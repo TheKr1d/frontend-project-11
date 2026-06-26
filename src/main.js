@@ -20,7 +20,7 @@ export const app = () => {
         addUrl(url)
       })
       .catch(err => {
-        const errors = err.errors || [err.message || 'Неизвестная ошибка'];
+        const errors = err.errors || [err.message || 'unknownError'];
         setErrors(errors)
       });
   });

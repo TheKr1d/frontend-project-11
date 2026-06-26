@@ -1,5 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './style.css';
 import { stateUI, addUrl, setErrors } from './state';
 import { render } from './view';
 import { subscribe } from 'valtio/vanilla';

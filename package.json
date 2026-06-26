@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "main": "src/index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -16,8 +15,6 @@
     "vite": "^8.1.0"
   },
   "dependencies": {
-    "bootstrap": "^5.3.8",
-    "valtio": "^2.3.2",
-    "yup": "^1.7.1"
+    "bootstrap": "^5.3.8"
   }
 }

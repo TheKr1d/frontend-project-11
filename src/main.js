@@ -27,5 +27,3 @@ export const app = () => {
 
   subscribe(stateUI, render)
 }
-
-app()

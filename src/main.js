@@ -23,12 +23,17 @@ function handleValidation(value) {
 }
 
 function handleFetch(url) {
-  return axios.get('/api/get', {
-    params: {
-      url: url,
-      disableCache: true
-    }
-  });
+  return axios
+    .get('https://allorigins.hexlet.app/get', {
+      params: {
+        url: url,
+        disableCache: true
+      }
+    })
+    .catch((error) => {
+      console.error('AllOrigins reques filed:', error.message);
+      throw error;
+    })
 }
 
 function handleParsing(response) {

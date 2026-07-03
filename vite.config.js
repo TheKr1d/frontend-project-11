@@ -1,8 +1,17 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/',  // Важно для правильных путей
+  base: '/',
   build: {
-    outDir: 'dist',  // По умолчанию dist, но можно указать явно
+    outDir: 'dist',
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://allorigins.hexlet.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
 });

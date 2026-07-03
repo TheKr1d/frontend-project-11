@@ -11,6 +11,13 @@ export default {
         notOneOf: "Эта ссылка уже используется",
         unknownError: "Неизвестная ошибка"
       }
+    },
+    button: {
+      view: 'Просмотр'
+    },
+    ui: {
+      feeds: 'Фиды',
+      posts: 'Посты'
     }
   },
 }

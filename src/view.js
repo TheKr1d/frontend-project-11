@@ -3,23 +3,35 @@ import { stateUI } from './state';
 import { domElements } from './domELements';
 import i18n from './locales/index.js';
 
-const renderErrorsUrl = () => {
+const renderErrorsUrl = (errors) => {
     const { input, invalidFeedback } = domElements();
 
-    const obj = snapshot(stateUI)
+    input.classList.add('is-invalid')
+    const errorMessages = errors.map(error => i18n.t(`errorMessages.validator.${error}`))
+    invalidFeedback.textContent = errorMessages.join(', ')
+    invalidFeedback.classList = 'invalid-feedback'
+    invalidFeedback.style.display = 'block'
+}
 
-    if (obj.errors.length > 0) {
-        input.classList.add('is-invalid')
-        const errorMessages = obj.errors.map(error => i18n.t(`errorMessages.validator.${error}`))
-        invalidFeedback.textContent = errorMessages.join(', ')
-        invalidFeedback.style.display = 'block'
-    } else {
-        input.classList.remove('is-invalid')
-        invalidFeedback.textContent = ''
-        invalidFeedback.style.display = 'none'
-        input.value = ''
-        input.focus()
-    }
+const renderSetErrorsUrl = () => {
+    const { input, invalidFeedback } = domElements();
+    input.classList.remove('is-invalid')
+    invalidFeedback.textContent = ''
+    invalidFeedback.classList = ''
+    invalidFeedback.style.display = 'none'
+    input.value = ''
+    input.focus()
+}
+
+const renderSucces = () => {
+    const { input, invalidFeedback } = domElements();
+    input.classList.add('is-valid')
+    input.classList.remove('is-invalid')
+    invalidFeedback.textContent = i18n.t('button.rssSucces')
+    invalidFeedback.style.display = 'block'
+    invalidFeedback.classList = 'valid-feedback'
+    input.value = ''
+    input.focus()
 }
 
 const createFeedElement = (feeds) => {
@@ -101,7 +113,6 @@ const createTitle = (text) => {
 
 const renderContent = (feeds, posts) => {
     const { content } = domElements();
-    const { input, invalidFeedback } = domElements();
 
     const divContent = document.createElement('div');
     divContent.className = 'row g-0'
@@ -121,11 +132,52 @@ const renderContent = (feeds, posts) => {
     content.appendChild(container)
 }
 
-export const render = () => {
-    renderErrorsUrl()
-
-    const { content: { feeds, posts } } = snapshot(stateUI)
-    if (posts.length > 0) {
-        renderContent(feeds, posts)
+const setButtonLoading = (isLoading = true) => {
+    const { btnSpinner, btnText, submitBtn } = domElements()
+    if (isLoading) {
+        btnSpinner.classList.remove('d-none');
+        btnText.textContent = 'Загрузка...';
+        submitBtn.disabled = true;
+    } else {
+        btnSpinner.classList.add('d-none');
+        btnText.textContent = 'Добавить';
+        submitBtn.disabled = false;
     }
-};
+}
+
+export const renderUi = () => {
+    const {
+        state,
+        errors,
+        content
+    } = snapshot(stateUI)
+
+    switch (state) {
+        case 'loading': {
+            setButtonLoading(true)
+            break;
+        }
+
+        case 'failed': {
+            setButtonLoading(false)
+            renderErrorsUrl(errors)
+            break;
+        }
+
+        case 'processed': {
+            setButtonLoading(true)
+            break;
+        }
+
+        case 'uploaded': {
+            const { feeds, posts } = content
+            setButtonLoading(false)
+            renderSetErrorsUrl()
+            renderSucces()
+            renderContent(feeds, posts)
+
+            break;
+        }
+
+    }
+}

@@ -20,12 +20,14 @@
           <div class="input-group">
             <input id="rss-url" name="url" type="text" class="form-control" placeholder="Введите URL RSS"
               aria-label="RSS URL" label="Ссылка RSS" />
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <button type="submit" class="btn btn-primary" id="submit-btn"><span class="spinner-border spinner-border-sm me-2 d-none"
+                id="btn-spinner" role="status" aria-hidden="true"></span>
+              <span id="btn-text">Добавить</span></button>
           </div>
           <small class="text-muted d-block mt-1">
             Например: https://rosinvest.com/cm/feed
           </small>
-          <div class="invalid-feedback" id="invalid-feedback">fdsfsdf</div>
+          <div id="invalid-feedback"></div>
         </form>
       </div>
     </div>

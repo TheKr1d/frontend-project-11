@@ -13,7 +13,8 @@ export default {
       }
     },
     button: {
-      view: 'Просмотр'
+      view: 'Просмотр',
+      rssSucces: 'RSS успешно загружен'
     },
     ui: {
       feeds: 'Фиды',

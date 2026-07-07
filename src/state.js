@@ -10,26 +10,45 @@ export const stateUI = proxy({
     }
 });
 
-const normalizeFeedContent = (content) => {
+export const normalizeFeedContent = (content, originalUrl, myFeedId = null) => {
     const { title, description, link, items } = content
 
+    const feedId = myFeedId ?? crypto.randomUUID()
+
     const feed = {
-        id: crypto.randomUUID(),
+        id: feedId,
         title,
         description,
         link
     }
 
+    const url = {
+        feedId,
+        id: crypto.randomUUID(),
+        url: originalUrl
+    }
+
     const postsWithIds = items.map(item => ({
-        feedId: feed.id,
+        feedId: feedId,
         id: crypto.randomUUID(),
         ...item
     }));
 
     return {
         feed,
-        postsWithIds: postsWithIds
+        postsWithIds: postsWithIds,
+        url
     }
+}
+
+export const setPosts = (newPosts, feedId) => {
+    const normalisePosts = newPosts.map(item => ({ ...item, feedId }))
+    Object.assign(stateUI, {
+        content: {
+            ...stateUI.content,
+            posts: [...stateUI.content.posts, ...normalisePosts],
+        }
+    });
 }
 
 export const getUrls = () => stateUI.content.urls;
@@ -44,13 +63,10 @@ export const setState = (newProcess, data) => {
         }
 
         case 'processed': {
-            const { url } = data
-
             Object.assign(stateUI, {
                 state: newProcess,
                 content: {
-                    ...stateUI.content,
-                    urls: [...stateUI.content.urls, url]
+                    ...stateUI.content
                 },
                 errors: []
             });
@@ -69,18 +85,19 @@ export const setState = (newProcess, data) => {
 
 
         case 'uploaded': {
-            const { content } = data
-            const { feed, postsWithIds } = normalizeFeedContent(content)
+            const { content, originalUrl } = data
+            const { feed, postsWithIds, url } = normalizeFeedContent(content, originalUrl)
             Object.assign(stateUI, {
                 state: newProcess,
                 content: {
                     ...stateUI.content,
                     feeds: [...stateUI.content.feeds, feed],
-                    posts: [...stateUI.content.posts, ...postsWithIds]
+                    posts: [...stateUI.content.posts, ...postsWithIds],
+                    urls: [...stateUI.content.urls, url]
                 },
                 errors: []
             });
-            break;
+            return url.feedId;
         }
 
         default: {

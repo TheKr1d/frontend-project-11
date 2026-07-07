@@ -1,18 +1,65 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
-import { setState, stateUI } from './state';
+import { setState, stateUI, setPosts } from './state';
 import { renderUi } from './view';
-import { subscribe } from 'valtio/vanilla';
+import { subscribe, snapshot } from 'valtio/vanilla';
 import { validatorURL } from './validator';
 import { domElements } from './domELements';
+import { normalizeFeedContent } from './state';
 import rssParser from './rssParser';
 import axios from 'axios';
+
+const URL = 'https://allorigins.hexlet.app/get'
+const timeoutIds = {}
+
+function runUpdate(feedId) {
+  const { url } = snapshot(stateUI).content.urls.find(a => a.feedId === feedId)
+
+  axios
+    .get(URL, {
+      params: {
+        url: url,
+        disableCache: true
+      }
+    })
+    .then((response) => {
+      const content = rssParser(response.data.contents)
+      const { postsWithIds } = normalizeFeedContent(content, url, feedId)
+
+      const postsFilter = stateUI.content.posts.filter(a => a.feedId === feedId)  
+      const guidsPosts = postsFilter.map(post => post.guid)
+
+      const newPosts = postsWithIds.filter(post => !guidsPosts.includes(post.guid))
+
+      if (newPosts.length > 0) {
+        setPosts(newPosts, feedId)
+      }
+    })
+    .catch((error) => {
+      console.error('AllOrigins reques filed:', error.message);
+      throw error;
+    })
+    .finally(() => {
+      if (timeoutIds[feedId]) {
+        clearTimeout(timeoutIds[feedId])
+      }
+      startTimer(feedId)
+    })
+}
+
+function startTimer(feedId,) {
+  const timeoutId = setTimeout(() => {
+    runUpdate(feedId)
+  }, 5000);
+
+  timeoutIds[feedId] = timeoutId
+}
 
 function handleValidation(value) {
   return validatorURL()
     .validate(value, { abortEarly: false })
     .then(url => {
-      setState('processed', { url })
+      setState('processed')
       return url
     })
     .catch(err => {
@@ -24,11 +71,17 @@ function handleValidation(value) {
 
 function handleFetch(url) {
   return axios
-    .get('https://allorigins.hexlet.app/get', {
+    .get(URL, {
       params: {
         url: url,
         disableCache: true
       }
+    })
+    .then((response) => {
+      return {
+        ...response,
+        originalUrl: url
+      };
     })
     .catch((error) => {
       console.error('AllOrigins reques filed:', error.message);
@@ -38,7 +91,14 @@ function handleFetch(url) {
 
 function handleParsing(response) {
   const content = rssParser(response.data.contents)
-  setState('uploaded', { content })
+  const originalUrl = response.originalUrl
+
+  const feedId = setState('uploaded', { content, originalUrl })
+
+
+  startTimer(feedId);
+
+  return feedId
 }
 
 function handleError(err) {

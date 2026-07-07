@@ -1,6 +1,6 @@
 import { snapshot } from 'valtio/vanilla';
 import { stateUI } from './state';
-import { domElements } from './domELements';
+import { domElements } from './domELements.js';
 import i18n from './locales/index.js';
 
 const renderErrorsUrl = (errors) => {
@@ -95,6 +95,13 @@ const createPostsElement = (posts) => {
         button.className = 'btn btn-secondary btn-sm px-3';
         button.textContent = i18n.t(`button.view`);
 
+        button.dataset.href = link;
+
+        button.addEventListener('click', (e) => {
+            e.preventDefault()
+            window.open(link, '_blank', 'noopener');
+        });
+
         div.appendChild(span)
         div.appendChild(button)
 
@@ -128,8 +135,7 @@ const renderContent = (feeds, posts) => {
 
     container.appendChild(divContent)
 
-    content.textContent = ''
-    content.appendChild(container)
+    content.replaceChildren(container);
 }
 
 const setButtonLoading = (isLoading = true) => {

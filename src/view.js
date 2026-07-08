@@ -1,7 +1,9 @@
 import { snapshot } from 'valtio/vanilla';
 import { stateUI } from './state';
 import { domElements } from './domELements.js';
+import { Modal } from 'bootstrap';
 import i18n from './locales/index.js';
+import DOMPurify from 'dompurify';
 
 const renderErrorsUrl = (errors) => {
     const { input, invalidFeedback } = domElements();
@@ -77,9 +79,9 @@ const createPostsElement = (posts) => {
 
     container.appendChild(titlePost);
 
-    posts.forEach(({ link, title }) => {
+    posts.forEach(({ link, title, description }) => {
         const div = document.createElement('div');
-        div.className = 'bg-light p-2 px-3 d-flex align-items-center justify-content-between';
+        div.className = 'bg-light p-2 px-3 d-flex align-items-center justify-content-between fw-bold';
 
         const span = document.createElement('span');
         span.className = 'small';
@@ -99,7 +101,21 @@ const createPostsElement = (posts) => {
 
         button.addEventListener('click', (e) => {
             e.preventDefault()
-            window.open(link, '_blank', 'noopener');
+            div.classList.replace('fw-bold', 'fw-normal')
+            const { exampleModal, modalTitle, modalDescription, modalReed } = domElements();
+            const modal = new Modal(exampleModal);
+
+            modalTitle.textContent = title
+            modalDescription.innerHTML = DOMPurify.sanitize(description);
+
+            modalReed.addEventListener('click', (e2) => {
+                e2.preventDefault()
+
+                window.open(link, '_blank', 'noopener');
+            })
+            
+            
+            modal.show()
         });
 
         div.appendChild(span)

@@ -7,5 +7,9 @@ export const domElements = () => {
         submitBtn: document.getElementById('submit-btn'),
         btnSpinner: document.getElementById('btn-spinner'),
         btnText: document.getElementById('btn-text'),
+        exampleModal: document.getElementById('exampleModal'),
+        modalTitle: document.getElementById('exampleModalLabel'),
+        modalDescription: document.getElementById('modalDescription'),
+        modalReed: document.getElementById('modalReed'),
     }
 }

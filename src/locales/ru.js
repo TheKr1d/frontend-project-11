@@ -10,12 +10,17 @@ export default {
         url: "Ссылка должна быть валидным URL",
         request: "Не удалось получить RSS",
         notOneOf: "Эта ссылка уже используется",
-        unknownError: "Неизвестная ошибка"
+        invalidRss: "Ресурс не содержит валидный RSS",
+        unknownError: "Неизвестная ошибка",
+        network: "Ошибка сети"
       }
     },
     button: {
       view: 'Просмотр',
       rssSucces: 'RSS успешно загружен'
+    },
+    modal: {
+      description: 'Цель: Научиться извлекать из дерева необходимые данные'
     },
     ui: {
       feeds: 'Фиды',

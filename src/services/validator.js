@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { getUrls } from './state';
+import { getUrls } from '../state';
 
 export const validatorURL = () => {
     return yup

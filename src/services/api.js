@@ -1,0 +1,18 @@
+import axios from 'axios';
+
+const PROXY_URL = 'https://allorigins.hexlet.app/get';
+
+export const fetchViaProxy = (url) => {
+    return axios
+        .get(PROXY_URL, {
+            params: {
+                url: url,
+                disableCache: true
+            },
+            timeout: 10000,  // 10 секунд таймаут
+            headers: {
+                'Accept': 'application/json'
+            }
+
+        })
+};

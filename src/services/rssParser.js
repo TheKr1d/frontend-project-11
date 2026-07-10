@@ -21,7 +21,6 @@ export default (data) => {
         items: []
     };
 
-    // Извлекаем все записи (items)
     const items = xmlDoc.querySelectorAll('item');
     items.forEach(item => {
         feed.items.push({

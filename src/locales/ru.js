@@ -8,6 +8,7 @@ export default {
       validator: {
         required: "Не должно быть пустым",
         url: "Ссылка должна быть валидным URL",
+        request: "Не удалось получить RSS",
         notOneOf: "Эта ссылка уже используется",
         unknownError: "Неизвестная ошибка"
       }

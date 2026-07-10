@@ -1,29 +1,53 @@
-name: CI Lint
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
-permissions:
-  contents: read
-
+name: CI Lint & Test & Sonar
+on: [push, pull_request]
 jobs:
   ci:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+      - run: npm ci
+      
+      # Линтинг
+      - run: make lint
+      
+      # Тесты с покрытием
+      - run: npm run test:coverage
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
+      
+      # Артефакт для дебага (опционально)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: make lint
+  sonar:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+      - uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+      - run: npm ci
+      - uses: sonarsource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=TheKr1d_frontend-project-11
+            -Dsonar.organization=thekr1d
+            -Dsonar.sources=src,bin
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.tests=__tests__

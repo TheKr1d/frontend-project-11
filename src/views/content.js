@@ -50,7 +50,7 @@ const createPostsElement = (posts, readPostIds) => {
     posts.forEach(({ link, title, id }) => {
         const div = document.createElement('div');
         div.className = 'bg-light p-2 px-3 d-flex align-items-center justify-content-between';
-        div.classList.add(readPostIds.includes(id) ? 'fw-normal' : 'fw-bold')
+        
 
         const span = document.createElement('span');
         span.className = 'small';
@@ -58,6 +58,7 @@ const createPostsElement = (posts, readPostIds) => {
         const a = document.createElement('a')
         a.href = link
         a.className = 'text-decoration-none text-primary'
+        a.classList.add(readPostIds.includes(id) ? 'fw-normal' : 'fw-bold')
         a.textContent = title
 
         span.appendChild(a)

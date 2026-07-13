@@ -1,3 +1,4 @@
+// src/handles/handleFetch.js
 import { fetchViaProxy } from '../services/api';
 import { setFormState, addContentState } from '../state';
 import rssParser from '../services/rssParser';
@@ -11,7 +12,8 @@ export const handleFetch = (url) => {
       try {
         content = rssParser(response.data.contents);
       } catch (parseError) {
-        throw new Error('invalidRss', { cause: parseError });
+        // Пробрасываем ошибку парсинга дальше
+        throw new Error('invalidRss');
       }
       
       const normaliseContent = getNormaliseContent(content, url);
@@ -27,10 +29,12 @@ export const handleFetch = (url) => {
     .catch((error) => {
       console.error('Error:', error.message);
       
-      if (error.message === 'invalidRss') {
+      // Если это ошибка от rssParser или уже известная ошибка
+      if (error.message === 'invalidRss' || error.message === 'notOneOf') {
         throw error;
       }
       
+      // Остальные ошибки - сетевые
       throw new Error('network');
     });
 };

@@ -9,7 +9,6 @@ export const fetchViaProxy = (url) => {
                 url: url,
                 disableCache: true
             },
-            timeout: 5000,
             headers: {
                 'Accept': 'application/json'
             }

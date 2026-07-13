@@ -7,7 +7,7 @@ export const fetchViaProxy = (url) => {
         .get(PROXY_URL, {
             params: {
                 url: url,
-                disableCache: true
+                disableCache: "true"
             },
             headers: {
                 'Accept': 'application/json'

@@ -1,6 +1,8 @@
 import { setFormState } from "../state";
 
 export const handleError = (err) => {
-  const errorMessage = err.message || 'unknownError';
-  setFormState('failed', { errorMessage })
+  //const errorMessage = err.message || 'unknownError';
+
+  //setFormState('failed', { errorMessage })
+  setFormState('failed', err)
 }

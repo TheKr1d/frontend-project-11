@@ -10,30 +10,27 @@ const createFeedElement = (feeds) => {
 
     const container = document.createElement('div');
     container.className = 'col-3'
+    container.appendChild(titleFeeds)
 
     const div = document.createElement('div');
     div.className = 'p-2 px-3 align-items-center'
+
     feeds.forEach(({ description, title }) => {
-        const figure = document.createElement('figure');
+        const div = document.createElement('div');
+        div.className = 'p-2 px-3';
 
-        const blockquote = document.createElement('blockquote')
-        blockquote.className = 'blockquote'
+        const p = document.createElement('p');
+        p.textContent = title;
+        div.appendChild(p);
 
-        const h4 = document.createElement('h4')
-        h4.textContent = description
-        blockquote.appendChild(h4)
+        const figcaption = document.createElement('figcaption');
+        figcaption.className = 'blockquote-footer';
+        figcaption.textContent = description;
+        div.appendChild(figcaption);
 
-        const figcaption = document.createElement('figcaption')
-        figcaption.className = 'blockquote-footer'
-        figcaption.textContent = title
-
-        figure.appendChild(blockquote)
-        figure.appendChild(figcaption)
-        div.appendChild(figure)
-
-
-    })
-    container.appendChild(titleFeeds)
+        container.appendChild(div);
+    });
+    
     container.appendChild(div)
     return container
 }

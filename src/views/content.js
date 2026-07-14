@@ -5,35 +5,32 @@ import { handlePost } from '../handles/handlePost';
 import i18n from '../locales/index';
 
 const createFeedElement = (feeds) => {
-
-    const titleFeeds = createTitle(i18n.t(`ui.feeds`))
+    const titleFeeds = createTitle(i18n.t('ui.feeds'));
 
     const container = document.createElement('div');
-    container.className = 'col-3'
-    container.appendChild(titleFeeds)
-
-    const div = document.createElement('div');
-    div.className = 'p-2 px-3 align-items-center'
+    container.className = 'col-3';
+    container.appendChild(titleFeeds);
 
     feeds.forEach(({ description, title }) => {
-        const div = document.createElement('div');
-        div.className = 'p-2 px-3';
+        const item = document.createElement('div');
+        item.className = 'p-2 px-3';
 
         const p = document.createElement('p');
         p.textContent = title;
-        div.appendChild(p);
+        item.appendChild(p);
 
         const figcaption = document.createElement('figcaption');
         figcaption.className = 'blockquote-footer';
         figcaption.textContent = description;
-        div.appendChild(figcaption);
+        item.appendChild(figcaption);
 
-        container.appendChild(div);
+        container.appendChild(item);
     });
-    
-    container.appendChild(div)
-    return container
+
+    return container;
 }
+
+
 
 const createPostsElement = (posts, readPostIds) => {
 
@@ -47,7 +44,7 @@ const createPostsElement = (posts, readPostIds) => {
     posts.forEach(({ link, title, id }) => {
         const div = document.createElement('div');
         div.className = 'bg-light p-2 px-3 d-flex align-items-center justify-content-between';
-        
+
 
         const span = document.createElement('span');
         span.className = 'small';

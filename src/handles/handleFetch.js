@@ -5,6 +5,7 @@ import { getNormaliseContent } from '../utils/normalizeContent';
 import { createTimerManager } from '.';
 
 export const handleFetch = (url) => {
+  console.log(12)
   return fetchViaProxy(url)
     .then((response) => {
       let content;

@@ -1,7 +1,11 @@
+const generateId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
 const normaliseUrl = (originalUrl, feedId) => {
     const dataUrl = {
         feedId,
-        id: crypto.randomUUID(),
+        id: generateId(),
         url: originalUrl
     }
 
@@ -10,7 +14,7 @@ const normaliseUrl = (originalUrl, feedId) => {
 
 const normaliseFeed = (content) => {
     const { title, description, link } = content
-    const feedId = crypto.randomUUID()
+    const feedId = generateId()
     const feed = {
         id: feedId,
         title,
@@ -24,7 +28,7 @@ const normaliseFeed = (content) => {
 export const normalisePosts = (content, feedId) => {
     const postsWithIds = content.items.map(item => ({
         feedId: feedId,
-        id: crypto.randomUUID(),
+        id: generateId(),
         ...item
     }));
     return postsWithIds;

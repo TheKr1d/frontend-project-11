@@ -3,7 +3,6 @@ import { setFormState, addContentState } from '../state';
 import rssParser from '../services/rssParser';
 import { getNormaliseContent } from '../utils/normalizeContent';
 import { createTimerManager } from '.';
-import {getDomELements} from '../utils/getDomELements';
 
 export const handleFetch = (url) => {
 
@@ -13,12 +12,6 @@ export const handleFetch = (url) => {
       try {
         content = rssParser(response.data.contents);
       } catch (parseError) {
-        const { content } = getDomELements();
-        if (content) content.textContent = JSON.stringify({
-          message: error.message,
-          stack: error.stack,
-        });
-        throw error;
         throw new Error('invalidRss', { cause: parseError });
       }
 
@@ -32,12 +25,6 @@ export const handleFetch = (url) => {
       return normaliseContent;
     })
     .catch((error) => {
-      const { content } = getDomELements();
-      if (content) content.textContent = JSON.stringify({
-        message: error.message,
-        stack: error.stack,
-      });
-      throw error;
       console.error('Error:', error.message);
       
       if (error.message === 'invalidRss') {

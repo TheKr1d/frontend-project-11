@@ -19,13 +19,13 @@ const createFeedElement = (feeds) => {
         const blockquote = document.createElement('blockquote')
         blockquote.className = 'blockquote'
 
-        const p = document.createElement('p')
-        p.textContent = title
-        blockquote.appendChild(p)
+        const h4 = document.createElement('h4')
+        h4.textContent = description
+        blockquote.appendChild(h4)
 
         const figcaption = document.createElement('figcaption')
         figcaption.className = 'blockquote-footer'
-        figcaption.textContent = description
+        figcaption.textContent = title
 
         figure.appendChild(blockquote)
         figure.appendChild(figcaption)

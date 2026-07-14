@@ -12,7 +12,7 @@ export const handleFetch = (url) => {
       try {
         content = rssParser(response.data.contents);
       } catch (parseError) {
-        throw new Error(parseError, { cause: parseError });
+        throw new Error('invalidRss', { cause: parseError });
       }
 
       const normaliseContent = getNormaliseContent(content, url);
@@ -26,6 +26,7 @@ export const handleFetch = (url) => {
     })
     .catch((error) => {
       console.error('Error:', error.message);
+      
       if (error.message === 'invalidRss') {
         throw error;
       }

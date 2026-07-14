@@ -9,7 +9,7 @@ export default {
         required: "Не должно быть пустым",
         url: "Ссылка должна быть валидным URL",
         request: "Не удалось получить RSS",
-        notOneOf: "Эта ссылка уже используется",
+        notOneOf: "RSS уже существует",
         invalidRss: "Ресурс не содержит валидный RSS",
         unknownError: "Неизвестная ошибка",
         network: "Ошибка сети"

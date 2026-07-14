@@ -20,12 +20,12 @@ const createFeedElement = (feeds) => {
         blockquote.className = 'blockquote'
 
         const p = document.createElement('p')
-        p.textContent = description
+        p.textContent = title
         blockquote.appendChild(p)
 
         const figcaption = document.createElement('figcaption')
         figcaption.className = 'blockquote-footer'
-        figcaption.textContent = title
+        figcaption.textContent = description
 
         figure.appendChild(blockquote)
         figure.appendChild(figcaption)

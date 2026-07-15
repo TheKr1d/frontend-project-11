@@ -5,32 +5,44 @@ import { getNormaliseContent } from '../utils/normalizeContent';
 import { createTimerManager } from '.';
 
 export const handleFetch = (url) => {
-
   return fetchViaProxy(url)
     .then((response) => {
       let content;
+
       try {
         content = rssParser(response.data.contents);
-      } catch (parseError) {
-        throw new Error('invalidRss', { cause: parseError });
+      } catch (error) {
+        const rssError = new Error('invalidRss');
+        rssError.type = 'parse';
+        rssError.cause = error;
+        throw rssError;
       }
 
-      const normaliseContent = getNormaliseContent(content, url);
-      setFormState('uploaded', normaliseContent);
-      addContentState(normaliseContent);
-      const feedId = normaliseContent.feed.id;
+      let normalised;
+      try {
+        normalised = getNormaliseContent(content, url);
+      } catch (error) {
+        const normalizeError = new Error('normalize');
+        normalizeError.type = 'normalize';
+        normalizeError.cause = error;
+        throw normalizeError;
+      }
+
+      setFormState('uploaded', normalised);
+      addContentState(normalised);
+
       const timerManager = createTimerManager();
-      timerManager.startTimer(feedId);
-      
-      return normaliseContent;
+      timerManager.startTimer(normalised.feed.id);
+
+      return normalised;
     })
     .catch((error) => {
-      console.error('Error:', error.message);
-      
-      if (error.message === 'invalidRss') {
+      if (error.type === 'parse' || error.type === 'normalize') {
         throw error;
       }
-      
-      throw new Error('network');
+
+      const networkError = new Error('network');
+      networkError.type = 'network';
+      throw networkError;
     });
 };

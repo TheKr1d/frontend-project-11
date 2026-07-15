@@ -19,7 +19,7 @@ export const app = () => {
     const value = input.value.trim();
 
     handleValidation(value)
-      .then(handleFetch)
+      .then(() => handleFetch(value))
       .catch(handleError)
   });
 

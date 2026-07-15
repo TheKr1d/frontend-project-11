@@ -15,7 +15,7 @@ export const createTimerManager = () => {
     }, 5000);
 
     timeoutIds.set(feedId, timeoutId);
-  }
+  };
 
   const stopTimer = (feedId) => {
     const timeoutId = timeoutIds.get(feedId);
@@ -23,22 +23,20 @@ export const createTimerManager = () => {
       clearTimeout(timeoutId);
       timeoutIds.delete(feedId);
     }
-  }
+  };
 
   const stopAllTimers = () => {
     for (const timeoutId of timeoutIds.values()) {
       clearTimeout(timeoutId);
     }
     timeoutIds.clear();
-  }
+  };
 
   const runUpdate = (feedId) => {
     const feed = snapshot(formState).urls.find((a) => a.feedId === feedId);
     if (!feed) return;
 
-    const { url } = feed;
-
-    fetchViaProxy(url)
+    fetchViaProxy(feed.url)
       .then((response) => {
         const content = rssParser(response.data.contents);
         const posts = normalisePosts(content, feedId);
@@ -52,12 +50,12 @@ export const createTimerManager = () => {
         }
       })
       .catch((error) => {
-        console.error('AllOrigins request failed:', error.message);
+        console.error('Timer update error:', error);
       })
       .finally(() => {
         startTimer(feedId);
       });
-  }
+  };
 
   return {
     startTimer,
@@ -65,4 +63,4 @@ export const createTimerManager = () => {
     stopAllTimers,
     runUpdate,
   };
-}
+};

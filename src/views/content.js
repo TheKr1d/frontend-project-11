@@ -4,106 +4,97 @@ import { getDomELements } from '../utils/getDomELements';
 import { handlePost } from '../handles/handlePost';
 import i18n from '../locales/index';
 
+const createTitle = (text) => {
+  const h3 = document.createElement('h3');
+  h3.className = 'p-2 px-3';
+  h3.textContent = text;
+  return h3;
+};
+
 const createFeedElement = (feeds) => {
-    const titleFeeds = createTitle(i18n.t('ui.feeds'));
+  const container = document.createElement('div');
+  container.className = 'col-3';
 
-    const container = document.createElement('div');
-    container.className = 'col-3';
-    container.appendChild(titleFeeds);
+  container.appendChild(createTitle(i18n.t('ui.feeds')));
 
-    feeds.forEach(({ description, title }) => {
-        const item = document.createElement('div');
-        item.className = 'p-2 px-3';
+  feeds.forEach(({ title, description }) => {
+    const item = document.createElement('figure');
+    item.className = 'p-2 px-3 mb-3';
 
-        const p = document.createElement('p');
-        p.textContent = title;
-        item.appendChild(p);
+    const feedTitle = document.createElement('p');
+    feedTitle.className = 'mb-1 fw-bold';
+    feedTitle.textContent = title;
 
-        const figcaption = document.createElement('figcaption');
-        figcaption.className = 'blockquote-footer';
-        figcaption.textContent = description;
-        item.appendChild(figcaption);
+    const figcaption = document.createElement('figcaption');
+    figcaption.className = 'blockquote-footer mt-1';
+    figcaption.textContent = description;
 
-        container.appendChild(item);
-    });
+    item.append(feedTitle, figcaption);
+    container.appendChild(item);
+  });
 
-    return container;
-}
-
-
+  return container;
+};
 
 const createPostsElement = (posts, readPostIds) => {
+  const container = document.createElement('div');
+  container.className = 'col-9';
 
-    const titlePost = createTitle(i18n.t(`ui.posts`))
+  container.appendChild(createTitle(i18n.t('ui.posts')));
 
-    const container = document.createElement('div');
-    container.className = 'col-9';
+  const list = document.createElement('ul');
+  list.className = 'list-group';
 
-    container.appendChild(titlePost);
+  posts.forEach(({ link, title, id }) => {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex align-items-center justify-content-between';
 
-    posts.forEach(({ link, title, id }) => {
-        const div = document.createElement('div');
-        div.className = 'bg-light p-2 px-3 d-flex align-items-center justify-content-between';
+    const span = document.createElement('span');
+    span.className = 'small';
 
+    const a = document.createElement('a');
+    a.href = link;
+    a.className = `text-decoration-none text-primary ${readPostIds.includes(id) ? 'fw-normal' : 'fw-bold'}`;
+    a.textContent = title;
 
-        const span = document.createElement('span');
-        span.className = 'small';
+    span.appendChild(a);
 
-        const a = document.createElement('a')
-        a.href = link
-        a.className = 'text-decoration-none text-primary'
-        a.classList.add(readPostIds.includes(id) ? 'fw-normal' : 'fw-bold')
-        a.textContent = title
+    const button = document.createElement('button');
+    button.className = 'btn btn-secondary btn-sm px-3';
+    button.textContent = i18n.t('button.view');
+    button.dataset.id = id;
+    button.dataset.href = link;
 
-        span.appendChild(a)
+    li.append(span, button);
+    list.appendChild(li);
+  });
 
-        const button = document.createElement('button');
-        button.className = 'btn btn-secondary btn-sm px-3';
-        button.textContent = i18n.t(`button.view`);
-        button.dataset.id = id;
+  list.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    e.preventDefault();
+    handlePost(btn.dataset.id);
+  });
 
-        button.dataset.href = link;
-
-        div.appendChild(span)
-        div.appendChild(button)
-
-        container.appendChild(div);
-    })
-
-    container.addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        e.preventDefault();
-        handlePost(btn.dataset.id);
-    });
-
-    return container;
-}
-
-const createTitle = (text) => {
-    const h3 = document.createElement('h3')
-    h3.className = 'p-2 px-3'
-    h3.textContent = text
-    return h3
-}
+  container.appendChild(list);
+  return container;
+};
 
 export const renderContent = () => {
-    const { content } = getDomELements();
-    const { feeds, posts, readPostIds } = snapshot(contentState)
+  const { content } = getDomELements();
+  const { feeds, posts, readPostIds } = snapshot(contentState);
 
-    const divContent = document.createElement('div');
-    divContent.className = 'row g-0'
+  const wrapper = document.createElement('div');
+  wrapper.className = 'container-fluid px-0';
 
-    const postsElements = createPostsElement(posts, readPostIds)
-    divContent.appendChild(postsElements)
+  const row = document.createElement('div');
+  row.className = 'row g-0';
 
-    const feedElements = createFeedElement(feeds)
-    divContent.appendChild(feedElements)
+  row.append(
+    createPostsElement(posts, readPostIds),
+    createFeedElement(feeds),
+  );
 
-    const container = document.createElement('div');
-    container.className = 'container-fluid px-0'
-
-    container.appendChild(divContent)
-
-    content.replaceChildren(container);
-}
+  wrapper.appendChild(row);
+  content.replaceChildren(wrapper);
+};

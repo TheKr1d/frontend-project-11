@@ -21,7 +21,7 @@ const createFeedElement = (feeds) => {
     const item = document.createElement('figure');
     item.className = 'p-2 px-3 mb-3';
 
-    const feedTitle = document.createElement('p');
+    const feedTitle = document.createElement('h5');
     feedTitle.className = 'mb-1 fw-bold';
     feedTitle.textContent = title;
 
